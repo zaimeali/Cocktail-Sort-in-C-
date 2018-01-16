@@ -1,0 +1,134 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.IO;
+
+namespace Cocktail_Sort_Filing
+{
+    class Filing
+    {
+        string mydocpath = "C:\\Users\\Zaime Ali\\Desktop\\CocktailSort.txt"; //Put your text file path here
+        public void Writer(int[] Array)
+        {
+            using (StreamWriter SW = new StreamWriter(mydocpath))
+            {
+                for (int i = 0; i < Array.Length; i++)
+                {
+                    SW.WriteLine(Array[i]);
+                }
+            }
+        }
+        public int Getlength()
+        {
+            int Count = 0;
+            try
+            {
+                using (StreamReader SR = new StreamReader(mydocpath))
+                {
+                    string line;
+                    while ((line = SR.ReadLine()) != null)
+                    {
+                        Count++;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error 404! File Not Found");
+                Console.WriteLine(e.Message);
+            }
+            return Count;
+        }
+        public int[] Reader(int Len)
+        {
+            int[] Arr = new int[Len];
+            try
+            {
+                using (StreamReader SR = new StreamReader(mydocpath))
+                {
+                    for (int i = 0; i < Len; i++)
+                    {
+                        Arr[i] = Convert.ToInt16(SR.ReadLine());
+                        Console.WriteLine("Array[{0}] : {1}", i, Arr[i]);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error 404! File Not Found");
+                Console.WriteLine(e.Message);
+            }
+            return Arr;
+        }
+    }
+    class CocktailSort
+    {
+        public void Swap(ref int a, ref int b)
+        {
+            int Temp = a;
+            a = b;
+            b = Temp;
+        }
+        public int[] Cocktail_Sort(int[] Array)
+        {
+            int Start = 0;
+            int Len = Array.Length;
+            bool Flag = true;
+            while (Flag == true)
+            {
+                Flag = false;
+                for (int i = Start; i < Len - 1; i++)
+                {
+                    if (Array[i] > Array[i + 1])
+                    {
+                        Swap(ref Array[i], ref Array[i + 1]);
+                        Flag = true;
+                    }
+                }
+                if (Flag != true)
+                {
+                    break;
+                }
+                for (int j = Len - 2; j >= Start; j--)
+                {
+                    if (Array[j] > Array[j + 1])
+                    {
+                        Swap(ref Array[j], ref Array[j + 1]);
+                        Flag = true;
+                    }
+                }
+                Len--;
+                Start++;
+            }
+            return Array;
+        }
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("\tCOCKTAIL SORT\n");
+
+            Filing F = new Filing();
+
+            int Len = F.Getlength();
+            Console.WriteLine("Length of Array is : " +Len);
+            Console.WriteLine("\nBefore Sorting: ");
+            int[] arr = F.Reader(Len);
+
+            CocktailSort CS = new CocktailSort();
+
+            Console.WriteLine("\n\nAfter Sorting: ");
+            arr = CS.Cocktail_Sort(arr);
+            for (int i = 0; i < Len; i++)
+            {
+                Console.WriteLine("Array[{0}] : {1}", i, arr[i]);
+            }
+
+            F.Writer(arr);
+
+            Console.ReadLine();
+        }
+    }
+}
